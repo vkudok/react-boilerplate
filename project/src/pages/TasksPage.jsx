@@ -2,6 +2,7 @@ import {useState} from 'react';
 import ModalCustom from '../components/Modal';
 import Button from '@mui/material/Button';
 import TaskCard from '../components/TaskCard';
+import LogoutButton from "../components/LogoutButton";
 
 
 const TasksPage = () => {
@@ -20,15 +21,15 @@ const TasksPage = () => {
 
     return (
         <div>
-      <Button onClick={handleOpen}>Open modal</Button>
-      <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridRowGap: '20px'}} className="">
+          <Button onClick={handleOpen}>Open modal</Button>
+          <LogoutButton/>
+          <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridRowGap: '20px'}} className="">
 
-      {DataCard.map((data) => {
-        return <TaskCard title={data.title} description={data.description}/>
-      })}
-      </div>
-
-            <ModalCustom open={open} close={setOpen}/>
+          {DataCard.map((data) => {
+            return <TaskCard title={data.title} description={data.description}/>
+          })}
+          </div>
+          <ModalCustom open={open} close={setOpen}/>
         </div>
     );
 };
