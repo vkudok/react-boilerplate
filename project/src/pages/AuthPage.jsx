@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {CssBaseline, Grid} from "@mui/material";
 import * as PropTypes from "prop-types";
 import {AuthBox, AuthButton, AuthHint, AuthHintButton, AuthInput, AuthTitle} from "../components/Auth/Auth.styled";
+import api from "../shared/service/axios/axiosClient";
 
 const AuthPage = () => {
     const [auth, setAuth] = useState('login')
@@ -9,21 +10,33 @@ const AuthPage = () => {
     const [username, setUsername] = useState('')
     const [imageUrl, setImageUrl] = useState('')
 
-
     const handleAuth = async () => {
         if (!username || !password) {
             return;
         }
 
-        if (password.length < 8) {
-            //Пароль должен содержать не менее 8 символов
-            return;
-        }
-
         if (auth === 'login') {
-           // стучимся в логин
+            api.post('/auth', {
+                hash: password,
+                username
+            }).then(res => {
+                localStorage.setItem('access_token', res.data?.access_token)
+                window.location.reload()
+            }).catch(function (error) {})
         } else {
-            // стучимся в регистрацию
+            api.post('/user', {
+                avatar: imageUrl,
+                hash: password,
+                username
+            }).then(res => {
+                api.post('/auth', {
+                    hash: password,
+                    username
+                }).then(res => {
+                    localStorage.setItem('access_token', res.data?.access_token)
+                    window.location.reload()
+                })
+            }).catch(function (error) {})
         }
 
     }
@@ -67,14 +80,15 @@ const AuthPage = () => {
                                 setPassword(event.target.value)
                             }
                         />
-                        <AuthInput
+                        {auth === 'registration' && <AuthInput
                             label="Url картинки"
                             inputProps={{autoComplete: 'off',}}
                             value={imageUrl}
                             onChange={(event) =>
                                 setImageUrl(event.target.value)
                             }
-                        />
+                        />}
+
                         <AuthButton
                             onClick={handleAuth}
                             variant="contained"
