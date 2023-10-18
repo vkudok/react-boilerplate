@@ -1,9 +1,17 @@
-import React from 'react';
+import {useState} from 'react';
+import ModalCustom from '../components/Modal';
+import Button from '@mui/material/Button';
+
 
 const TasksPage = () => {
+  const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+
     return (
         <div>
-            Tasks
+      <Button onClick={handleOpen}>Open modal</Button>
+            <ModalCustom open={open} close={setOpen}/>
         </div>
     );
 };
