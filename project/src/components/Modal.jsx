@@ -6,6 +6,7 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import InputCustom from './InputCustom';
+import api from '../shared/service/axios/axiosClient';
 
 const style = {
   position: 'absolute',
@@ -19,18 +20,24 @@ const style = {
   p: 4,
 };
 
-export default function ModalCustom() {
-  const [open, setOpen] = useState(false);
+export default function ModalCustom({open, close}) {
 const [title, setTitle] = useState("");
 const [description, setDescription] = useState("");
 const [value, setValue] = useState("");
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => close(false);
+ 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    api.post('/tasks', {
+    description: description,
+    title: title}, {headers: {
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZTIyZjU1ZS0zZjFiLTQ0YzctODdkNi1hYjE0OGQ5ODM0MmYiLCJ1c2VybmFtZSI6InRlYW0wIiwiaWF0IjoxNjk3NjIxNTg3LCJleHAiOjE2OTc3MDc5ODd9.fofkVpMGEm0awjsOLTam7gDOx0BJS1nfi4iBvkD-3sg'
+    }}).then(res => console.log(res))
+  }
 
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -46,12 +53,15 @@ const [value, setValue] = useState("");
       >
         <Fade in={open}>
           <Box sx={style}>
+            <form onSubmit={handleSubmit}>
             <Typography id="transition-modal-title" variant="h6" component="h2">
-              Text in a modal
+              Создайте тест
             </Typography>
             <InputCustom value={title} onChange={setTitle}/>
             <InputCustom value={description} onChange={setDescription}/>
             <InputCustom value={title} onChange={setValue}/>
+            <Button type='submit' variant="contained">Создать</Button>
+            </form>
           </Box>
         </Fade>
       </Modal>

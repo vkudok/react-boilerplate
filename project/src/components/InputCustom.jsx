@@ -15,7 +15,7 @@ onChange(e.target.value);
       noValidate
       autoComplete="off"
     >
-      <TextField value={value} onChange={handleChange} id="outlined-basic" label="Outlined" variant="outlined" />
+      <TextField value={value} onChange={handleChange} id="outlined-basic" label="Текст" variant="outlined" />
     </Box>
   );
 }
