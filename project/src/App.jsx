@@ -1,8 +1,9 @@
 import React from 'react';
+import BasicCard from "./components/TaskCard"
 
 function App() {
   return (
-    <div></div>
+    <BasicCard title="Задание1" info="Бла бла бла"/>
   );
 }
 
