@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {CssBaseline, Grid} from "@mui/material";
+import {Alert, CssBaseline, Grid} from "@mui/material";
 import * as PropTypes from "prop-types";
 import {AuthBox, AuthButton, AuthHint, AuthHintButton, AuthInput, AuthTitle} from "../components/Auth/Auth.styled";
 import api from "../shared/service/axios/axiosClient";
@@ -9,9 +9,11 @@ const AuthPage = () => {
     const [password, setPassword] = useState('')
     const [username, setUsername] = useState('')
     const [imageUrl, setImageUrl] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
     const handleAuth = async () => {
-        if (!username || !password) {
+        if (!username || !password || (auth === 'registration' && !imageUrl)) {
+            setErrorMessage('Поля не должны быть пустыми')
             return;
         }
 
@@ -21,8 +23,15 @@ const AuthPage = () => {
                 username
             }).then(res => {
                 localStorage.setItem('access_token', res.data?.access_token)
+                setErrorMessage('')
                 window.location.reload()
-            }).catch(function (error) {})
+            }).catch(function (error) {
+                if (error.response) {
+                    setErrorMessage(error.response.data?.message)
+                } else {
+                    setErrorMessage('Произошла ошибка: ' + error.message)
+                }
+            })
         } else {
             api.post('/user', {
                 avatar: imageUrl,
@@ -34,9 +43,18 @@ const AuthPage = () => {
                     username
                 }).then(res => {
                     localStorage.setItem('access_token', res.data?.access_token)
+                    setErrorMessage('')
                     window.location.reload()
                 })
-            }).catch(function (error) {})
+            }).catch(function (error) {
+                console.log(error)
+                if (error.response) {
+                    setErrorMessage(error.response.data?.message)
+                } else {
+                    setErrorMessage('Произошла ошибка: ' + error.message)
+
+                }
+            })
         }
 
     }
@@ -103,6 +121,17 @@ const AuthPage = () => {
                                 {auth === 'login' ? 'Зарегистирироваться' : 'Войти'}
                             </AuthHintButton>
                         </AuthHint>
+                        {errorMessage.length > 0 && <Alert
+                            severity="error"
+                            sx={{
+                                fontFamily: 'Montserrat',
+                                fontStyle: 'normal',
+                                fontWeight: '500',
+                                textTransform: 'uppercase',
+                            }}
+                        >
+                            {errorMessage}
+                        </Alert>}
                     </AuthBox>
                 </Grid>
             </Grid>
