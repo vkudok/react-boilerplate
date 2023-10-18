@@ -7,7 +7,6 @@ const AppRouter = () => {
     const [isAuth, setIsAuth] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
 
-
     const hasAccessToken = localStorage.getItem("access_token") ?? false;
 
     useEffect(() => {
@@ -21,8 +20,10 @@ const AppRouter = () => {
                 setIsLoading(false)
             }).catch(function (error) {setIsLoading(false)
             })
+        } else {
+            setIsLoading(false)
         }
-    }, [])
+    }, [hasAccessToken])
 
     const getRouts = () => {
         if (!isAuth) {
