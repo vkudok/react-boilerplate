@@ -1,8 +1,9 @@
 import React from 'react';
+import ModalCustom from './components/Modal';
 
 function App() {
   return (
-    <div></div>
+    <div><ModalCustom/></div>
   );
 }
 
