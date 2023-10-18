@@ -5,21 +5,24 @@ import api from "../shared/service/axios/axiosClient";
 
 const AppRouter = () => {
     const [isAuth, setIsAuth] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+
 
     const hasAccessToken = localStorage.getItem("access_token") ?? false;
 
     useEffect(() => {
-        console.log('hasAccessToken', hasAccessToken)
         if(hasAccessToken) {
             const token = localStorage.getItem("access_token")
+            setIsLoading(true)
             api.get('/auth/user', {headers: {'Authorization': `Bearer ${token}`}}).then((body) => {
-                console.log('res', body)
-                if(body?.data) {
+                if(body?.data?.uuid) {
                     setIsAuth(true)
                 }
-            }).catch(function (error) {})
+                setIsLoading(false)
+            }).catch(function (error) {setIsLoading(false)
+            })
         }
-    }, [hasAccessToken])
+    }, [])
 
     const getRouts = () => {
         if (!isAuth) {
@@ -27,6 +30,12 @@ const AppRouter = () => {
         } else {
             return userRoutes
         }
+    }
+
+    if(isLoading) {
+        return (
+            <div>Loading...</div>
+        )
     }
 
     return (
