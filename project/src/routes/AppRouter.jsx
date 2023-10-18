@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {publicRoutes, userRoutes} from "./routes";
 import {Route, Routes} from "react-router-dom";
 import api from "../shared/service/axios/axiosClient";
+import Loading from "../components/Loading";
 
 const AppRouter = () => {
     const [isAuth, setIsAuth] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
-
 
     const hasAccessToken = localStorage.getItem("access_token") ?? false;
 
@@ -21,8 +21,10 @@ const AppRouter = () => {
                 setIsLoading(false)
             }).catch(function (error) {setIsLoading(false)
             })
+        } else {
+            setIsLoading(false)
         }
-    }, [])
+    }, [hasAccessToken])
 
     const getRouts = () => {
         if (!isAuth) {
@@ -34,7 +36,7 @@ const AppRouter = () => {
 
     if(isLoading) {
         return (
-            <div>Loading...</div>
+            <Loading/>
         )
     }
 
